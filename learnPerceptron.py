@@ -20,7 +20,9 @@ from perceptron.units import Perceptron
 from perceptron.trainer import PerceptronTrainer
 from plot.simple import PerceptronPlot
 from plot.animated import AnimatedPlot
+from plot.surface import ErrorSurface
 import numpy as np
+import math
 
 def main():
     """TODO: Docstring for main.
@@ -31,7 +33,8 @@ def main():
     # testing XOR
     n1 = Perceptron()
     #plot = PerceptronPlot()
-    n1.set_threshold(lambda n: int(n >= 0))
+    #n1.set_threshold(lambda n: int(n >= 0))
+    n1.set_threshold(lambda n: 1/(1+math.exp(n*-1)))
 
     initial_weights=[0.5, -0.7, 0.2]
     print "initial weights: ", initial_weights
@@ -46,11 +49,13 @@ def main():
     # for i in range(0, 4):
     #     trainer.train(n1)
 
-    animated = AnimatedPlot()
-    animated.generate(trainer, n1)
-
     #plot.show()
 
+    #animated = AnimatedPlot()
+    #animated.generate(trainer, n1)
+
+    surface = ErrorSurface(trainer,n1)
+    surface.show()
 
 
 if __name__ == "__main__":

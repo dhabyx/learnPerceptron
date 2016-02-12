@@ -23,7 +23,7 @@ class PerceptronTrainer:
     outputs = 0
     _input_values = 0
     _output_values = 0
-    _total_values = 0
+    _total_trains = 0
     _train_counter = 0
 
     def read_data(self, filename):
@@ -44,7 +44,7 @@ class PerceptronTrainer:
                 line=np.array(line.split()).astype(int)
                 self._input_values = np.vstack([self._input_values,line[: -self.outputs ]])
                 self._output_values = np.append(self._output_values, line[ -self.outputs: ])
-                self._total_values += 1
+                self._total_trains += 1
 
         self._input_values = np.delete(self._input_values, (0), axis=0)
         self._output_values = np.delete(self._output_values, (0))
@@ -54,9 +54,22 @@ class PerceptronTrainer:
 
     def train(self, perceptron):
         perceptron.step_train(self._input_values[self._train_counter],
-        self._output_values[self._train_counter])
-        if self._train_counter == self._total_values-1:
+                                self._output_values[self._train_counter])
+        self._inc_train_counter()
+        return self
+
+    def _inc_train_counter(self):
+        if self._train_counter == self._total_trains-1:
             self._train_counter = 0
         else:
             self._train_counter += 1
         return self
+
+    def get_one_input(self):
+        one_row = self._input_values[self._train_counter]
+        output_value = self._output_values[self._train_counter]
+        self._inc_train_counter()
+        return one_row, output_value
+
+    def get_total_trains(self):
+        return self._total_trains
